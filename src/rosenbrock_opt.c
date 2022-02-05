@@ -63,6 +63,7 @@ void SteepestGradientDescent(float *seed, float *solution, unsigned dimension)
         printf("Couldn't allocate memory for gradient");
     
     for(int i = 0; i < dimension; i++)solution[i]=seed[i];
+    fprintf(file, "x_1\tx_2\tf(x_1,x_2)\n");
     do
     {
         min = rosenbrock(solution,2,1,100);
@@ -115,7 +116,7 @@ void ConjugateGradientMethod2(float *seed, float *solution, unsigned dimension)
         printf("Couldn't allocate memory for gradient");
     if((xx=(float *)malloc(dimension*sizeof(float)))==NULL)
         printf("Couldn't allocate memory for gradient");
-    
+    fprintf(file, "x_1\tx_2\tf(x_1,x_2)\n");
     for(int i = 0; i < dimension; i++)solution[i]=seed[i];
     do
     {
@@ -172,7 +173,7 @@ void LevenvergMarquardt(float *seed, float *solution, unsigned dimension)
         printf("Couldn't allocate memory for gradient");
 
     for(int i = 0; i < dimension; i++)solution[i]=seed[i];
-
+    fprintf(file, "x_1\tx_2\tf(x_1,x_2)\n");
     do
     {
         min = rosenbrock(solution,dimension,1,100);
@@ -203,7 +204,7 @@ void LevenvergMarquardt(float *seed, float *solution, unsigned dimension)
 
 
 
-int main()
+int main(int argc, char *argv[])
 {
     float *x, *solution, a=1, b=100;
     unsigned dimension = 2;
@@ -214,6 +215,10 @@ int main()
     
     x[0]=-1.5;
     x[1]=-1;
+    if(argc>1)
+        x[0] = atoi(argv[1]);
+    if(argc>2)
+        x[1] = atoi(argv[2]);
 
     gradient_rosenbrock(x,solution,dimension,1,100);
     printf("Gradient = (%f, %f)\n", solution[0], solution[1]);
