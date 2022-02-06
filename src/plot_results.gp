@@ -20,7 +20,7 @@ set format cb  "10^{%T}"
 set multiplot
 splot [-2:2] [-2:2] Rosenbrock(x,y)
 #splot [-2:2] [-2:2] "../results/ConjugateGradientMethod.dat" u 1:2:3 w linespoints lc "black" lw 2 pt 2 title "Congugate Gradient Method"
-#splot [-2:2] [-2:2] "../results/SteepestGradientDescent.dat" u 1:2:3 w linespoints lc "black" lw 2 pt 2 title "Gradient Method"
-splot [-2:2] [-2:2] "../results/LevenbergMarquardt.dat" u 1:2:3 w linespoints lc "black" lw 2 pt 2 title "Levenberg-Marquardt "
+splot [-2:2] [-2:2] "../results/SteepestGradientDescent.dat" u 1:2:3 w linespoints lc "black" lw 2 pt 2 title "Gradient Method"
+#splot [-2:2] [-2:2] "../results/LevenbergMarquardt.dat" u 1:2:3 w linespoints lc "black" lw 2 pt 2 title "Levenberg-Marquardt "
 
 unset multiplot

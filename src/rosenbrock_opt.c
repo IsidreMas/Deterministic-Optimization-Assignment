@@ -2,9 +2,9 @@
 # include <stdlib.h>
 
 /*The number of values in x must match the dimension*/
-float rosenbrock(float *x, unsigned d, float a, float b)
+double rosenbrock(double *x, unsigned d, double a, double b)
 {
-    float sum = 0, term1, term2;
+    double sum = 0, term1, term2;
     for(int i = 0; i<d-1; i++)
     {
         term1 = x[i+1]-x[i]*x[i];
@@ -14,9 +14,9 @@ float rosenbrock(float *x, unsigned d, float a, float b)
     return sum;
 }
 
-void gradient_rosenbrock(float *x, float *gradient, unsigned d, float a, float b)
+void gradient_rosenbrock(double *x, double *gradient, unsigned d, double a, double b)
 {
-    float term1, term2;
+    double term1, term2;
     for(int i = 0; i<d; i++)gradient[i]=0;
     for(int i = 0; i<d-1; i++)
     {
@@ -28,21 +28,21 @@ void gradient_rosenbrock(float *x, float *gradient, unsigned d, float a, float b
     }
 }
 
-float scalar_product(float *vec1, float *vec2, int dim)
+double scalar_product(double *vec1, double *vec2, int dim)
 {
-    float sum = 0;
+    double sum = 0;
     for(int i = 0; i<dim; i++)sum+=vec1[i]*vec2[i];
     return sum;
 }
 
-void LM_d(float *x, float *d, float *gradient, float lambda) //2 dimensional -(H-lambda*I)^-1*gradient
+void LM_d(double *x, double *d, double *gradient, double lambda) //2 dimensional -(H-lambda*I)^-1*gradient
 {
-    float A = (lambda+200)*(-lambda+400*x[1]-2)-400*(3*lambda+200)*x[0]*x[0];
+    double A = (lambda+200)*(-lambda+400*x[1]-2)-400*(3*lambda+200)*x[0]*x[0];
     d[0] = -((-200-lambda)*gradient[0]-400*x[0]*gradient[1])/A;
     d[1] = -(-400*x[0]*gradient[0]+(-lambda-1200*x[0]*x[0]+400*x[1]-2)*gradient[1])/A;
 }
 
-void SteepestGradientDescent(float *seed, float *solution, unsigned dimension)
+unsigned SteepestGradientDescent(double *seed, double *solution, unsigned dimension)
 {
     FILE *file;
     file = fopen("../results/SteepestGradientDescent.dat","w");
@@ -53,13 +53,13 @@ void SteepestGradientDescent(float *seed, float *solution, unsigned dimension)
       exit(1);             
     }
 
-    float *gradient,*xx, alphak, *d, fk, fk1, sigma = 1e-4, rho = 5e-1, min;
+    double *gradient,*xx, alphak, *d, fk, fk1, sigma = 1e-4, rho = 5e-1, min;
     unsigned iter = 0;
-    if((gradient=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((gradient=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for gradient");
-    if((d=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((d=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for gradient");
-    if((xx=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((xx=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for gradient");
     
     for(int i = 0; i < dimension; i++)solution[i]=seed[i];
@@ -92,13 +92,14 @@ void SteepestGradientDescent(float *seed, float *solution, unsigned dimension)
     free(d);
     free(xx);
     printf("Iterations = %u\n", iter);
+    return iter;
 }
 
-void ConjugateGradientMethod2(float *seed, float *solution, unsigned dimension)
+unsigned ConjugateGradientMethod(double *seed, double *solution, unsigned dimension)
 {
     FILE *file;
     file = fopen("../results/ConjugateGradientMethod.dat","w");
-    float betak = 0;
+    double betak = 0;
 
     if(file == NULL)
     {
@@ -106,15 +107,15 @@ void ConjugateGradientMethod2(float *seed, float *solution, unsigned dimension)
       exit(1);             
     }
 
-    float *gradient,*xx, alphak, *d,*dk,fk, fk1, sigma = 1e-1, rho = 5e-1, min;
+    double *gradient,*xx, alphak, *d,*dk,fk, fk1, sigma = 1e-1, rho = 5e-1, min;
     unsigned iter = 0;
-    if((gradient=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((gradient=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for gradient");
-    if((d=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((d=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for gradient");
-    if((dk=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((dk=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for gradient");
-    if((xx=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((xx=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for gradient");
     fprintf(file, "x_1\tx_2\tf(x_1,x_2)\n");
     for(int i = 0; i < dimension; i++)solution[i]=seed[i];
@@ -150,9 +151,10 @@ void ConjugateGradientMethod2(float *seed, float *solution, unsigned dimension)
     free(xx);
     fclose(file);
     printf("Iterations = %u\n", iter);
+    return iter;
 }
 
-void LevenvergMarquardt(float *seed, float *solution, unsigned dimension)
+unsigned LevenvergMarquardt(double *seed, double *solution, unsigned dimension)
 {
     FILE *file;
     file = fopen("../results/LevenbergMarquardt.dat","w");
@@ -163,13 +165,13 @@ void LevenvergMarquardt(float *seed, float *solution, unsigned dimension)
       exit(1);             
     }
 
-    float *gradient,*d,*xx,lambda=1e-3,min;
+    double *gradient,*d,*xx,lambda=1e-3,min;
     unsigned iter = 0;
-    if((gradient=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((gradient=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for gradient");
-    if((d=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((d=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for gradient");
-    if((xx=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((xx=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for gradient");
 
     for(int i = 0; i < dimension; i++)solution[i]=seed[i];
@@ -198,7 +200,7 @@ void LevenvergMarquardt(float *seed, float *solution, unsigned dimension)
     free(xx);
     fclose(file);
     printf("Iterations = %u\n", iter);
-
+    return iter;
 
 }
 
@@ -206,11 +208,11 @@ void LevenvergMarquardt(float *seed, float *solution, unsigned dimension)
 
 int main(int argc, char *argv[])
 {
-    float *x, *solution, a=1, b=100;
+    double *x, *solution, a=1, b=100;
     unsigned dimension = 2;
-    if((x=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((x=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for variables");
-    if((solution=(float *)malloc(dimension*sizeof(float)))==NULL)
+    if((solution=(double *)malloc(dimension*sizeof(double)))==NULL)
         printf("Couldn't allocate memory for gradient");
     
     x[0]=-1.5;
@@ -221,14 +223,68 @@ int main(int argc, char *argv[])
         x[1] = atoi(argv[2]);
 
     gradient_rosenbrock(x,solution,dimension,1,100);
-    printf("Gradient = (%f, %f)\n", solution[0], solution[1]);
-
-    printf("f(-1.5,-1)=%f\n",rosenbrock(x,dimension,a,b));
+    printf("Deterministic optimization methods for the minimization of the Rosenbrock's function.\n\n");
+    printf("Initial value: f(%f,%f)=%f\n\n",x[0], x[1], rosenbrock(x,dimension,a,b));
+    printf("Steepest Gradient Descent method:\n");
     SteepestGradientDescent(x,solution,dimension);
-    printf("seed(%f,%f)->f(%f,%f)=%f\n",x[0],x[1], solution[0], solution[1], rosenbrock(solution,dimension,a,b));
-    ConjugateGradientMethod2(x,solution,dimension);
-    printf("seed(%f,%f)->f(%f,%f)=%f\n",x[0],x[1], solution[0], solution[1], rosenbrock(solution,dimension,a,b));
+    printf("seed(%f,%f)->f(%f,%f)=%f\n\n",x[0],x[1], solution[0], solution[1], rosenbrock(solution,dimension,a,b));
+    printf("Conjugate Gradient Method:\n");
+    ConjugateGradientMethod(x,solution,dimension);
+    printf("seed(%f,%f)->f(%f,%f)=%f\n\n",x[0],x[1], solution[0], solution[1], rosenbrock(solution,dimension,a,b));
+    printf("Levenberg-Marquardt method:\n");
     LevenvergMarquardt(x,solution,dimension);
-    printf("seed(%f,%f)->f(%f,%f)=%f\n",x[0],x[1], solution[0], solution[1], rosenbrock(solution,dimension,a,b));
+    printf("seed(%f,%f)->f(%f,%f)=%f\n\n",x[0],x[1], solution[0], solution[1], rosenbrock(solution,dimension,a,b));
+
+    /* Code to test convergence points
+
+    FILE *file1;
+    FILE *file2;
+    FILE *file3;
+    file1 = fopen("../results/Convergence1.dat","w");
+    file2 = fopen("../results/Convergence2.dat","w");
+    file3 = fopen("../results/Convergence3.dat","w");
+
+    if(file1 == NULL)
+    {
+      printf("Error!");   
+      exit(1);             
+    }
+    if(file2 == NULL)
+    {
+      printf("Error!");   
+      exit(1);             
+    }
+    if(file3 == NULL)
+    {
+      printf("Error!");   
+      exit(1);             
+    }
+    
+    unsigned iter;
+    int samples = 200;
+    double L = 1000, dx=(double) L/samples;
+    x[0]=-500;
+    x[1]=-500;
+
+    for(int i = 0; i<samples; i++)
+        {
+            for(int j=0; j<samples; j++)
+                {
+                    x[1]+=dx;
+                    ConjugateGradientMethod(x,solution,dimension);
+                    fprintf(file1, "%f\t%f\t%f\n", x[0], x[1], rosenbrock(solution,dimension, a, b));
+                    //SteepestGradientDescent(x,solution,dimension);
+                    //fprintf(file2, "%f\t%f\t%f\n", x[0], x[1], rosenbrock(solution,dimension, a, b));
+                    //LevenvergMarquardt(x,solution,dimension);
+                    //fprintf(file3, "%f\t%f\t%f\n", x[0], x[1], rosenbrock(solution,dimension, a, b));
+                }
+            x[0]+=dx;
+            x[1]=-500;
+        }
+    
+    fclose(file1);
+    fclose(file2);
+    fclose(file3);
+    */
     return 0;
 }
